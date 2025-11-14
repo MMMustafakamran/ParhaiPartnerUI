@@ -17,6 +17,7 @@ import { TeacherDashboard } from './components/Teacher/TeacherDashboard';
 import { CounsellorDashboard } from './components/Counsellor/CounsellorDashboard';
 import { Notifications } from './components/Notifications';
 import { Payments } from './components/Payments';
+import { Toaster } from './components/ui/sonner';
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -72,6 +73,7 @@ export default function App() {
 
   return (
     <div className="flex min-h-screen bg-white">
+      <Toaster position="top-right" richColors />
       <Sidebar 
         currentPage={currentPage} 
         onNavigate={handleNavigate}
