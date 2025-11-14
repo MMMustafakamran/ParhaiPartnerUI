@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowLeft, Plus, Brain, FileText, CheckCircle2, Circle, ChevronDown, ChevronRight, Sparkles, Clock } from 'lucide-react';
+import { ArrowLeft, Plus, Brain, FileText, CheckCircle2, Circle, ChevronDown, ChevronRight, Sparkles, Clock, MessageSquare, X } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Progress } from './ui/progress';
@@ -70,8 +70,33 @@ export function StudyPlanDetail({ planId, onStartQuiz, onBack }: StudyPlanDetail
   ];
 
   const notes = [
-    { id: '1', title: 'Motion Formulas', difficulty: 'Easy', lastEdited: '2025-11-10' },
-    { id: '2', title: 'Thermodynamics Key Concepts', difficulty: 'Medium', lastEdited: '2025-11-08' },
+    { 
+      id: '1', 
+      title: 'Motion Formulas', 
+      difficulty: 'Easy', 
+      lastEdited: '2025-11-10',
+      isAIGenerated: true,
+      validationStatus: 'pending' as 'pending' | 'approved' | 'rejected',
+      validatedBy: null as string | null,
+    },
+    { 
+      id: '2', 
+      title: 'Thermodynamics Key Concepts', 
+      difficulty: 'Medium', 
+      lastEdited: '2025-11-08',
+      isAIGenerated: true,
+      validationStatus: 'approved' as 'pending' | 'approved' | 'rejected',
+      validatedBy: 'Dr. Ahmed',
+    },
+    {
+      id: '3',
+      title: 'Manual Study Notes',
+      difficulty: 'Hard',
+      lastEdited: '2025-11-09',
+      isAIGenerated: false,
+      validationStatus: null,
+      validatedBy: null,
+    },
   ];
 
   const toggleChapter = (chapterId: string) => {
@@ -215,9 +240,23 @@ export function StudyPlanDetail({ planId, onStartQuiz, onBack }: StudyPlanDetail
                               >
                                 {topic.name}
                               </label>
-                              {topic.status === 'done' && (
-                                <CheckCircle2 className="w-5 h-5 text-green-600" />
-                              )}
+                              <div className="flex items-center gap-2">
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    // Open doubt solver for this topic
+                                    console.log('Open doubt solver for:', topic.name);
+                                  }}
+                                  className="p-1.5 rounded-md hover:bg-purple-50 text-gray-500 hover:text-purple-600 transition-colors"
+                                  aria-label={`Ask doubt about ${topic.name}`}
+                                  title="Ask a doubt"
+                                >
+                                  <MessageSquare className="w-4 h-4" />
+                                </button>
+                                {topic.status === 'done' && (
+                                  <CheckCircle2 className="w-5 h-5 text-green-600" />
+                                )}
+                              </div>
                             </div>
                           ))}
                         </div>
@@ -304,21 +343,79 @@ export function StudyPlanDetail({ planId, onStartQuiz, onBack }: StudyPlanDetail
             <CardContent>
               {notes.length > 0 ? (
                 <div className="space-y-3">
-                  {notes.map((note) => (
-                    <div
-                      key={note.id}
-                      className="p-4 rounded-lg border border-gray-200 hover:border-purple-300 hover:bg-purple-50/50 transition-all cursor-pointer"
-                    >
-                      <div className="flex items-start justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <FileText className="w-5 h-5 text-purple-600" />
-                          <h4 className="text-gray-900">{note.title}</h4>
+                  {notes.map((note) => {
+                    const getValidationBadge = () => {
+                      if (!note.isAIGenerated) return null;
+                      
+                      switch (note.validationStatus) {
+                        case 'pending':
+                          return (
+                            <Badge className="bg-yellow-100 text-yellow-700 hover:bg-yellow-100">
+                              <Clock className="w-3 h-3 mr-1" />
+                              Pending Validation
+                            </Badge>
+                          );
+                        case 'approved':
+                          return (
+                            <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
+                              <CheckCircle2 className="w-3 h-3 mr-1" />
+                              Approved {note.validatedBy && `by ${note.validatedBy}`}
+                            </Badge>
+                          );
+                        case 'rejected':
+                          return (
+                            <Badge className="bg-red-100 text-red-700 hover:bg-red-100">
+                              <X className="w-3 h-3 mr-1" />
+                              Rejected
+                            </Badge>
+                          );
+                        default:
+                          return null;
+                      }
+                    };
+
+                    return (
+                      <div
+                        key={note.id}
+                        className="p-4 rounded-lg border border-gray-200 hover:border-purple-300 hover:bg-purple-50/50 transition-all"
+                      >
+                        <div className="flex items-start justify-between mb-2">
+                          <div className="flex items-center gap-2 flex-1">
+                            <FileText className="w-5 h-5 text-purple-600 flex-shrink-0" />
+                            <h4 className="text-gray-900">{note.title}</h4>
+                            {note.isAIGenerated && (
+                              <Badge variant="secondary" className="text-xs">
+                                <Sparkles className="w-3 h-3 mr-1" />
+                                AI Generated
+                              </Badge>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline">{note.difficulty}</Badge>
+                          </div>
                         </div>
-                        <Badge variant="outline">{note.difficulty}</Badge>
+                        <div className="flex items-center justify-between mt-3">
+                          <p className="text-sm text-gray-600">
+                            Last edited: {new Date(note.lastEdited).toLocaleDateString()}
+                          </p>
+                          <div className="flex items-center gap-2">
+                            {getValidationBadge()}
+                            <button
+                              onClick={() => {
+                                // Open doubt solver for this note
+                                console.log('Open doubt solver for note:', note.title);
+                              }}
+                              className="p-1.5 rounded-md hover:bg-purple-50 text-gray-500 hover:text-purple-600 transition-colors"
+                              aria-label={`Ask doubt about ${note.title}`}
+                              title="Ask a doubt"
+                            >
+                              <MessageSquare className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
                       </div>
-                      <p className="text-sm text-gray-600">Last edited: {new Date(note.lastEdited).toLocaleDateString()}</p>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               ) : (
                 <div className="text-center py-12">

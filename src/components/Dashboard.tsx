@@ -1,4 +1,4 @@
-import { BookOpen, Trophy, Target, Clock, ChevronRight, Sparkles } from 'lucide-react';
+import { BookOpen, Trophy, Clock, ChevronRight, Sparkles } from 'lucide-react';
 import { Card, CardContent } from './ui/card';
 import { Button } from './ui/button';
 import { Progress } from './ui/progress';
@@ -11,12 +11,6 @@ interface DashboardProps {
 }
 
 export function Dashboard({ onNavigate, userRole = 'student' }: DashboardProps) {
-  const stats = [
-    { label: 'Study Plans', value: '3', icon: BookOpen },
-    { label: 'Quizzes Taken', value: '12', icon: Trophy },
-    { label: 'Topics Done', value: '24', icon: Target },
-  ];
-
   const activePlans = [
     {
       id: '1',
@@ -87,28 +81,6 @@ export function Dashboard({ onNavigate, userRole = 'student' }: DashboardProps) 
             </Button>
           </div>
         </div>
-      </section>
-
-      {/* Stats Cards */}
-      <section className="grid grid-cols-3 gap-4 mb-8" aria-label="Statistics">
-        {stats.map((stat, index) => {
-          const Icon = stat.icon;
-          return (
-            <Card key={index} className="border-0 shadow-sm hover:shadow-md transition-shadow">
-              <CardContent className="p-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center" aria-hidden="true">
-                    <Icon className="w-6 h-6 text-purple-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600 font-medium">{stat.label}</p>
-                    <p className="text-2xl font-semibold text-gray-900 mt-1">{stat.value}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
       </section>
 
       <div className="grid grid-cols-3 gap-8">

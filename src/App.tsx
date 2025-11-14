@@ -172,6 +172,30 @@ export default function App() {
         {currentPage === 'payments' && (
           <Payments />
         )}
+
+        {currentPage === 'teacher-connection' && (
+          <div className="p-8">
+            <h1 className="text-2xl font-semibold text-gray-900 mb-4">My Teacher</h1>
+            <p className="text-gray-600">View your connected teacher and their feedback</p>
+            {/* Teacher connection page content can be added here */}
+          </div>
+        )}
+
+        {currentPage === 'counsellor-connection' && (
+          <div className="p-8">
+            <h1 className="text-2xl font-semibold text-gray-900 mb-4">My Counsellor</h1>
+            <p className="text-gray-600">View your connected counsellor and application guidance</p>
+            {/* Counsellor connection page content can be added here */}
+          </div>
+        )}
+
+        {currentPage === 'settings' && (
+          <div className="p-8">
+            <h1 className="text-2xl font-semibold text-gray-900 mb-4">Settings</h1>
+            <p className="text-gray-600">Manage your account settings and preferences</p>
+            {/* Settings page content can be added here */}
+          </div>
+        )}
       </main>
     </div>
   );
