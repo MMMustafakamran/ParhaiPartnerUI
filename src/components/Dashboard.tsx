@@ -6,9 +6,10 @@ import { Badge } from './ui/badge';
 
 interface DashboardProps {
   onNavigate: (page: string, planId?: string) => void;
+  userRole?: 'student' | 'teacher' | 'counsellor';
 }
 
-export function Dashboard({ onNavigate }: DashboardProps) {
+export function Dashboard({ onNavigate, userRole = 'student' }: DashboardProps) {
   const stats = [
     { label: 'Study Plans', value: '3', icon: BookOpen },
     { label: 'Quizzes Taken', value: '12', icon: Trophy },
